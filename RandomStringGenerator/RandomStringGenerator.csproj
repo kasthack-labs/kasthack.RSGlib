@@ -44,7 +44,7 @@
     <Compile Include="CharExpression.cs" />
     <Compile Include="ExpressionParser.cs" />
     <Compile Include="FormattedStringGenerator.cs" />
-    <Compile Include="Functions.cs" />
+    <Compile Include="Generators.cs" />
     <Compile Include="IExpression.cs" />
     <Compile Include="IntExpression.cs" />
     <Compile Include="NumberFormat.cs" />

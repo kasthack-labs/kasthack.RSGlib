@@ -5,64 +5,59 @@ namespace RandomStringGenerator
 {
     public class StaticASCIIStringExpression : IExpression
     {
-        ASCIIEncoding enc;
-        byte[] buf;
+        readonly ASCIIEncoding _enc;
+        readonly byte[] _buf;
         public override string ToString() {
             return GetString();
         }
-        public StaticASCIIStringExpression(string _str, ASCIIEncoding _enc = null) {
-            enc = _enc == null ? new ASCIIEncoding() : _enc;
-            buf = enc.GetBytes(_str);
+        public StaticASCIIStringExpression(string str, ASCIIEncoding enc = null) {
+            _enc = enc ?? new ASCIIEncoding();
+            this._buf = _enc.GetBytes(str);
         }
-        public StaticASCIIStringExpression(char[] _str, ASCIIEncoding _enc = null) {
-            enc = _enc == null ? new ASCIIEncoding() : _enc;
-            buf = enc.GetBytes(_str);
+        public StaticASCIIStringExpression(char[] str, ASCIIEncoding enc = null) {
+            _enc = enc ?? new ASCIIEncoding();
+            this._buf = _enc.GetBytes(str);
         }
-        public StaticASCIIStringExpression(byte[] _str, ASCIIEncoding _enc = null) {
-            enc = _enc == null ? new ASCIIEncoding() : _enc;
-            buf = _str;
+        public StaticASCIIStringExpression(byte[] str, ASCIIEncoding enc = null) {
+            _enc = enc ?? new ASCIIEncoding();
+            this._buf = str;
         }
         public string GetString() {
-            return enc.GetString(buf);
+            return this._enc.GetString(this._buf);
         }
         public char[] GetChars() {
-            return enc.GetChars(buf);
+            return this._enc.GetChars(this._buf);
         }
         public byte[] GetAsciiBytes() {
-            return buf;
+            return this._buf;
         }
-        public byte[] GetEncodingBytes(Encoding _enc) {
-            return _enc.GetBytes(enc.GetChars(buf));
+        public byte[] GetEncodingBytes(Encoding enc) {
+            return enc.GetBytes(this._enc.GetChars(this._buf));
         }
         public System.Collections.Generic.IEnumerable<byte[]> EnumAsciiBuffers() {
-            return new byte[][] { GetAsciiBytes() };
+            return new[] { GetAsciiBytes() };
         }
         public System.Collections.Generic.IEnumerable<string> EnumStrings() {
-            return new string[] { GetString() };
+            return new[] { GetString() };
         }
         public unsafe void ComputeStringLength(ref int* outputdata) {
-			*outputdata++ = buf.Length;
+			*outputdata++ = this._buf.Length;
         }
         public int ComputeMaxLenForSize() {
             return 1;
         }
-		public unsafe void GetAsciiBytesInsert(ref int* _Size, ref byte* _OutputBuffer) {
-			IntPtr __p = new IntPtr(_OutputBuffer);
-			Marshal.Copy(buf, 0, __p, *_Size);
-			_OutputBuffer += *_Size++;
+		public unsafe void GetAsciiBytesInsert(ref int* size, ref byte* outputBuffer) {
+			var p = new IntPtr(outputBuffer);
+			Marshal.Copy(this._buf, 0, p, *size);
+			outputBuffer += *size++;
 		}
-		public unsafe void GetAsciiInsert(ref int* _Size, ref char* _OutputBuffer) {
-			byte* __start, __end;
-			//IntPtr __p = new IntPtr(_OutputBuffer);
-			//Marshal.Copy(
-			//buf, 0, __p, *_Size);
-			//_OutputBuffer += *_Size++;
-			fixed ( byte* __buf = buf ) {
-				__start = __buf;
-				__end = __buf + *_Size++;
+		public unsafe void GetAsciiInsert(ref int* size, ref char* outputBuffer) {
+			fixed ( byte* tmpbuf = this._buf ) {
+				var start = tmpbuf;
+				var end = tmpbuf + *size++;
 				do
-					*_OutputBuffer++ = (char)*__start++;
-				while ( __start < __end );
+					*outputBuffer++ = (char)*start++;
+				while ( start < end );
 			}
 		}
 	}

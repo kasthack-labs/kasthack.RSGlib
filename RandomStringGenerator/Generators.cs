@@ -1,7 +1,5 @@
 ﻿//#define POINTERS
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
+
 using FRandom = FastRandom.FastRandom;
 namespace RandomStringGenerator {
     public static class Generators {
@@ -18,7 +16,7 @@ namespace RandomStringGenerator {
    108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,65,66,67,
    68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,
    33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,58,59,60,61,62,63,64,91,92,93,94,95,96,123,124,125,126};
-        public static readonly byte[] HexCharsBytes = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102, };
+        public static readonly byte[] HexCharsBytes = { 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 97, 98, 99, 100, 101, 102};
         /*
                 public static ushort[] Offsets = { 0, 0, 33, 48, 65, 97 };
         */
@@ -35,10 +33,7 @@ namespace RandomStringGenerator {
         public static string RandomString() {
             return new string( RandomASCII( 1, 8, ASCIIChars, 0, 61 ) );
         }
-        static string Matchev( Match m ) {
-            //slow. just for prototype
-            return new String( Enumerable.Repeat( ' ', m.Length ).ToArray() );
-        }
+
         #endregion
         #region Shit(wrappers 4 wrappers
         /*parsers*/
@@ -155,12 +150,12 @@ namespace RandomStringGenerator {
                 IntToHexStringBytesInsert( outArr, srcArr, i, sz );
             return output;
         }
-        public static unsafe byte[] IntToDecStringBytes( int _i ) {
-            if ( _i == 0 ) return Zba;
-            var sz = GetDecStringLength( _i );
+        public static unsafe byte[] IntToDecStringBytes( int i ) {
+            if ( i == 0 ) return Zba;
+            var sz = GetDecStringLength( i );
             var output = new byte[ sz ];
             fixed ( byte* outArr = output )
-                IntToDecStringBytesInsert( outArr, _i, sz );
+                IntToDecStringBytesInsert( outArr, i, sz );
             return output;
         }
         /*real generators*/
@@ -202,7 +197,7 @@ namespace RandomStringGenerator {
             }
             while ( input < end ) {
                 sum *= 10;
-                sum += ( (int) *input++ ) - 48;
+                sum += *input++ - 48;
             }
             return pos ? sum : -sum;
         }
@@ -211,12 +206,12 @@ namespace RandomStringGenerator {
             while ( @from < end && *@from != c ) {
                 cnt++;
                 @from++;
-            };
+            }
             return cnt;
         }
         /*generators with pointers*/
         public static unsafe void RandomUTFURLEncodeStringBytesInsert( byte* ptr, int realLen ) {
-            byte* end = ( ptr + realLen * 6 );
+            var end = ( ptr + realLen * 6 );
             ushort rnd;
             const byte pc = (byte) '%';
 
@@ -249,7 +244,7 @@ namespace RandomStringGenerator {
         }
         public static unsafe void RandomUTFURLEncodeStringInsert( char* ptr, int realLen ) {
             var end = ( ptr + realLen * 6 );
-            ushort __rnd;
+            ushort rnd;
             const char pc = '%';
 
             uint bfr = 0;
@@ -257,26 +252,26 @@ namespace RandomStringGenerator {
             fixed ( char* hexChars = HexChars ) {
                 while ( ptr < end ) {
                     //using temp uint to prevent unnecessary random generating
-                    __rnd = (ushort) bfr;
+                    rnd = (ushort) bfr;
                     if ( havenums-- == 0 ) {
                         bfr = Random.NextUInt();
                         havenums = 1;
-                        __rnd = (ushort) ( bfr >> 16 );
+                        rnd = (ushort) ( bfr >> 16 );
                     }
                     //indexing to use out-of-order optimizations
                     *( ptr + 1 ) = pc;
-                    *( ptr + 2 ) = *( hexChars + ( __rnd & 0xf ) );
-                    *( ptr + 3 ) = *( hexChars + ( ( __rnd >> 4 ) & 0xf ) );
+                    *( ptr + 2 ) = *( hexChars + ( rnd & 0xf ) );
+                    *( ptr + 3 ) = *( hexChars + ( ( rnd >> 4 ) & 0xf ) );
                     *( ptr + 4 ) = pc;
-                    *( ptr + 5 ) = *( hexChars + ( ( __rnd >> 8 ) & 0xf ) );
-                    *( ptr + 6 ) = *( hexChars + ( ( __rnd >> 12 ) & 0xf ) );
+                    *( ptr + 5 ) = *( hexChars + ( ( rnd >> 8 ) & 0xf ) );
+                    *( ptr + 6 ) = *( hexChars + ( ( rnd >> 12 ) & 0xf ) );
                     ptr += 6;
                 }
             }
         }
         public static unsafe void RandomASCIIInsert( char* ptr, int len, char* source, int maxindex ) {
             maxindex++;
-            char* end = ( ptr + len );
+            var end = ( ptr + len );
             while ( ptr < end ) *ptr++ = *( source + Random.Next( maxindex ) );
         }
         /*get_to_string_size*/

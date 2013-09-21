@@ -21,30 +21,28 @@ namespace RandomStringGenerator
 		public unsafe char[] GetChars() {
 			if ( Expressions.Length == 1 )
 				return Expressions[0].GetChars();
-			char* __b;
-			char[] __buffer;
-			int __outsize = 0;
-			int* __s;
-			int[] __size_buf = new int[this.ComputeMaxLenForSize()];//buffer 4 sizes
-			long __rcount = 0;
+		    var outsize = 0;
+			int* s;
+			var sizeBuf = new int[this.ComputeMaxLenForSize()];//buffer 4 sizes
+			long rcount;
 			//get generation data
-			fixed ( int* __szb = __size_buf ) {
-				__s = __szb;
-				ComputeStringLength(ref __s);
-				__rcount = __s - __szb;
+			fixed ( int* szb = sizeBuf ) {
+				s = szb;
+				ComputeStringLength(ref s);
+				rcount = s - szb;
 			}
 			//compute output length
-			for ( int __i = 0; __i < __rcount; __outsize += __size_buf[__i++] ) ;
-			__buffer = new char[__outsize];
+			for ( var i = 0; i < rcount; outsize += sizeBuf[i++] ) {}
+		    var buffer = new char[outsize];
 			//gen!
-			fixed ( int* __szb = __size_buf ) {
-				fixed ( char* __outb = __buffer ) {
-					__s = __szb;
-					__b = __outb;
-					GetAsciiInsert(ref __s, ref __b);
+			fixed ( int* szb = sizeBuf ) {
+				fixed ( char* outb = buffer ) {
+					s = szb;
+					var b = outb;
+					GetAsciiInsert(ref s, ref b);
 				}
 			}
-			return __buffer;
+			return buffer;
 		}
 		/// <summary>
 		/// Get native representation of expression execution result
@@ -59,10 +57,10 @@ namespace RandomStringGenerator
 		/// Get bytes of result encoded with encoding
 		/// DON'T USE IT.
 		/// </summary>
-		/// <param name="_enc">encoding for encoding, lol</param>
+		/// <param name="enc">encoding for encoding, lol</param>
 		/// <returns>bytes</returns>
-		public byte[] GetEncodingBytes(Encoding _enc) {
-			return this.Expressions.SelectMany( a => a.GetEncodingBytes( _enc ) ).ToArray();
+		public byte[] GetEncodingBytes(Encoding enc) {
+			return this.Expressions.SelectMany( a => a.GetEncodingBytes( enc ) ).ToArray();
 			//return Functions.GetT<byte>(1, a => a.GetEncodingBytes(_enc), this.Expressions);
 
 		}
@@ -79,53 +77,51 @@ namespace RandomStringGenerator
 		public System.Collections.Generic.IEnumerable<string> EnumStrings() {
 			return Expressions.SelectMany(a => a.EnumStrings());
 		}
-		public unsafe void ComputeStringLength(ref int* _outputdata) {
-			int __len = Expressions.Length;
-			for ( int __i = 0; __i < __len; __i++ )
-				Expressions[__i].ComputeStringLength(ref _outputdata);
+		public unsafe void ComputeStringLength(ref int* outputdata) {
+			var len = Expressions.Length;
+			for ( var i = 0; i < len; i++ )
+				Expressions[i].ComputeStringLength(ref outputdata);
 		}
 		public int ComputeMaxLenForSize() {
-			int __sum = 0, __len = Expressions.Length;
-			for ( int __i = 0; __i < __len; __i++ )
-				__sum += Expressions[__i].ComputeMaxLenForSize();
-			return __sum;
+			int sum = 0, len = Expressions.Length;
+			for ( var i = 0; i < len; i++ )
+				sum += Expressions[i].ComputeMaxLenForSize();
+			return sum;
 		}
 		public unsafe byte[] GetAsciiBytes() {//_GetPointedBytes() {
 			if ( Expressions.Length == 1 )
 				return Expressions[0].GetAsciiBytes();
-			byte* __b;
-			byte[] __buffer;
-			int __outsize=0;
-			int* __s;
-			int[] __size_buf = new int[this.ComputeMaxLenForSize()];//buffer 4 sizes
-			long __rcount = 0;
+		    var outsize=0;
+			int* s;
+			var sizeBuf = new int[this.ComputeMaxLenForSize()];//buffer 4 sizes
+			long rcount;
 			//get generation data
-			fixed ( int* __szb = __size_buf ) {
-				__s = __szb;
-				ComputeStringLength(ref __s);
-				__rcount = __s - __szb;
+			fixed ( int* szb = sizeBuf ) {
+				s = szb;
+				ComputeStringLength(ref s);
+				rcount = s - szb;
 			}
 			//compute output length
-			for ( int __i = 0; __i < __rcount; __outsize += __size_buf[__i++] ) ;
-			__buffer = new byte[__outsize];
+			for ( var i = 0; i < rcount; outsize += sizeBuf[i++] ) {}
+		    var buffer = new byte[outsize];
 			//gen!
-			fixed ( int* __szb = __size_buf ) {
-				fixed ( byte* __outb = __buffer ) {
-					__s = __szb;
-					__b = __outb;
-					GetAsciiBytesInsert(ref __s,ref __b);
+			fixed ( int* szb = sizeBuf ) {
+				fixed ( byte* outb = buffer ) {
+					s = szb;
+					var b = outb;
+					GetAsciiBytesInsert(ref s,ref b);
 				}
 			}
-			return __buffer;
+			return buffer;
 		}
-		public unsafe void GetAsciiBytesInsert(ref int* _Size, ref byte* _OutputBuffer) {
-			int __len = Expressions.Length;
-			for ( int __i = 0; __i < __len; __i++ )
-				Expressions[__i].GetAsciiBytesInsert(ref _Size, ref _OutputBuffer);
+		public unsafe void GetAsciiBytesInsert(ref int* size, ref byte* outputBuffer) {
+			var len = Expressions.Length;
+			for ( var i = 0; i < len; i++ )
+				Expressions[i].GetAsciiBytesInsert(ref size, ref outputBuffer);
 		}
-		public unsafe void GetAsciiInsert(ref int* _Size, ref char* _OutputBuffer) {
-			int __len = Expressions.Length;
-			for ( int __i = 0; __i < __len; Expressions[__i++].GetAsciiInsert(ref _Size, ref _OutputBuffer) );
+		public unsafe void GetAsciiInsert(ref int* size, ref char* outputBuffer) {
+			var len = Expressions.Length;
+			for ( var i = 0; i < len; Expressions[i++].GetAsciiInsert(ref size, ref outputBuffer) ) {}
 		}
 
 	}

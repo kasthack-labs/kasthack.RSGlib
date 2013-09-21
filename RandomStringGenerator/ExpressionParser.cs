@@ -50,53 +50,56 @@ namespace RandomStringGenerator
 		/// \{#[ICS](:[a-zA-Z])?:[0-9]+:[0-9]+#\}
 		/// Warning! string will NOT be validated
 		/// </summary>
-		/// <param name="_input"></param>
+		/// <param name="str"></param>
 		/// <returns></returns>
 		public static unsafe FormattedStringGenerator Parse(string str) {
-			int len = 0;
-			fixed ( char* _p = str ) {
-				char* p = _p;
-				return Parse(ref p, out len, str.Length, new ASCIIEncoding());
+		    fixed ( char* cp = str ) {
+				var p = cp;
+			    int len;
+			    return Parse(ref p, out len, str.Length, new ASCIIEncoding());
 			}
 		}
-		public static unsafe RepeatExpression ParseRepeatE(ref char* _from, out int _outcount, int _maxcount, ASCIIEncoding _enc = null) {
-			if ( _enc == null )
-				_enc = new ASCIIEncoding();
-			_from += 3;
-			RepeatExpression exp = new RepeatExpression();
-			exp.Expressions = Parse(ref _from, out _outcount, _maxcount - 3, _enc).Expressions;
-			_from += 3;
-			_outcount += 6;
-			int __cnt = 0;
-			__cnt = Generators.FindChar(_from, (char*)( _from + _maxcount - _outcount ), ':');
-			exp.Min = Generators.QIntParse(_from, __cnt);
-			_from += __cnt + 1;
-			__cnt = Generators.FindChar(_from, (char*)( _from + _maxcount - _outcount ), '}');
-			exp.Max = Generators.QIntParse(_from, __cnt);
-			_from += __cnt;
+
+	    private static unsafe RepeatExpression ParseRepeatE(ref char* @from, out int outcount, int maxcount, ASCIIEncoding enc = null) {
+			if ( enc == null )
+				enc = new ASCIIEncoding();
+			@from += 3;
+			var exp = new RepeatExpression {
+			    Expressions = Parse(ref @from, out outcount, maxcount - 3, enc).
+			        Expressions
+			};
+		    @from += 3;
+			outcount += 6;
+		    var cnt = Generators.FindChar(@from, @from + maxcount - outcount, ':');
+			exp.Min = Generators.QIntParse(@from, cnt);
+			@from += cnt + 1;
+			cnt = Generators.FindChar(@from, @from + maxcount - outcount, '}');
+			exp.Max = Generators.QIntParse(@from, cnt);
+			@from += cnt;
 			return exp;
 		}
-		/// <summary>
-		/// parse IntExpression _from string
-		/// pointer will point to closing } of expression
-		/// </summary>
-		/// <param name="_from">pointer to 1st char after opening {</param>
-		/// <param name="_outcount">returned value 4 read character _count </param>
-		/// <param name="_rnd">randomizer</param>
-		/// <returns>parsed expression</returns>
-		//works
-		public static unsafe IntExpression ParseIntE(ref char* _from, out int _outcount, int _max_count) {
+
+	    /// <summary>
+	    /// parse IntExpression _from string
+	    /// pointer will point to closing } of expression
+	    /// </summary>
+	    /// <param name="from">pointer to 1st char after opening {</param>
+	    /// <param name="outcount">returned value 4 read character _count </param>
+	    /// <param name="maxCount"></param>
+	    /// <returns>parsed expression</returns>
+	    //works
+	    private static unsafe IntExpression ParseIntE(ref char* @from, out int outcount, int maxCount) {
 			/*
 			* TODO: add string validation
 			*/
 			#region Variables
-			int __cnt = 0;
-			char* __end = _from + _max_count;
-			_outcount = 0;
-			IntExpression exp = new IntExpression();
+
+	        var end = @from + maxCount;
+			outcount = 0;
+			var exp = new IntExpression();
 			#endregion
 			#region Parse Format
-			switch ( *( _from += 2 ) )//skip expression type+separator
+			switch ( *( @from += 2 ) )//skip expression type+separator
 			{
 				case 'D':
 				case 'd':
@@ -106,25 +109,24 @@ namespace RandomStringGenerator
 				case 'h':
 					exp.Format = NumberFormat.Hex;
 					break;
-				default: break;
 			}
 			#endregion
-			_from += 2;//skip format+separator
-			_outcount += 4;//total move
+			@from += 2;//skip format+separator
+			outcount += 4;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Generators.FindChar(_from, __end, ':');
+			var cnt = Generators.FindChar(@from, end, ':');
 			//parse min length
-			exp.Min = Generators.QIntParse(_from, __cnt);
-			_from += __cnt + 1;//skip separator
-			_outcount += __cnt + 1;//add skip 4 min
+			exp.Min = Generators.QIntParse(@from, cnt);
+			@from += cnt + 1;//skip separator
+			outcount += cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Generators.FindChar(_from, __end, '}');
-			exp.Max = Generators.QIntParse(_from, __cnt);
-			_from += __cnt;
-			_outcount += __cnt;
+			cnt = Generators.FindChar(@from, end, '}');
+			exp.Max = Generators.QIntParse(@from, cnt);
+			@from += cnt;
+			outcount += cnt;
 			//skip closing bracket
 			//_from++;
 			#endregion
@@ -133,61 +135,59 @@ namespace RandomStringGenerator
 		/// <summary>
 		/// Parses string as ExpressionTree
 		/// </summary>
-		/// <param name="_from">pointer to __start parsing</param>
-		/// <param name="_outcount">__output to save move __offset</param>
-		/// <param name="_enc">encoding instanse for generated expressions</param>
-		/// <param name="_rnd">randomizer instanse for generated expressions</param>
-		/// <param name="_max_count">max string parse length</param>
+		/// <param name="from">pointer to __start parsing</param>
+		/// <param name="outcount">__output to save move __offset</param>
+		/// <param name="enc">encoding instanse for generated expressions</param>
+		/// <param name="maxCount">max string parse length</param>
 		/// <returns>expression tree</returns>
 		//works
-		public unsafe static FormattedStringGenerator Parse(ref char* _from, out int _outcount, int _max_count, ASCIIEncoding _enc = null) {
+		private unsafe static FormattedStringGenerator Parse(ref char* @from, out int outcount, int maxCount, ASCIIEncoding enc = null) {
 			#region Variables
-			List<IExpression> __exprs = new List<IExpression>();
-			char* __start = _from,
-			 __end = _from + _max_count;
-			int __cnt = 0;
-			if ( _enc == null )
-				_enc = new ASCIIEncoding();
-			_outcount = 0;
+			var exprs = new List<IExpression>();
+			char* start = @from,
+			end = @from + maxCount;
+			int cnt;
+			if ( enc == null )
+				enc = new ASCIIEncoding();
+			outcount = 0;
 			#endregion
 			#region Parse
-			while ( _from < __end ) {
-				if ( *_from == '}' ) break;
-				if ( *_from == '{' ) {
+			while ( @from < end ) {
+				if ( *@from == '}' ) break;
+				if ( *@from == '{' ) {
 					#region Add prev string
-					if ( --_from >= __start )
-						__exprs.Add(new StaticASCIIStringExpression(new string(__start, 0, (int)( _from + 1 - __start )), _enc));
-					_from++;
+					if ( --@from >= start )
+						exprs.Add(new StaticASCIIStringExpression(new string(start, 0, (int)( @from + 1 - start )), enc));
+					@from++;
 					#endregion
-					__exprs.Add(ExpresionSelect(ref _from, out __cnt, (int)( __end - _from ), _enc));
-					_outcount += __cnt;
-					__start = _from + 1;
+					exprs.Add(ExpresionSelect(ref @from, out cnt, (int)( end - @from ), enc));
+					outcount += cnt;
+					start = @from + 1;
 				}
-				_from++;
-				_outcount++;
+				@from++;
+				outcount++;
 			}
 			#endregion
 			#region Ending string
-			if ( --_from >= __start ) {
-				__exprs.Add(new StaticASCIIStringExpression(new string(__start, 0, (int)( _from + 1 - __start )), _enc));
-				__start = _from;
-			}
-			_from++;
+		    if ( --@from >= start )
+		        exprs.Add(new StaticASCIIStringExpression(new string(start, 0, (int) ( @from + 1 - start )), enc));
+		    @from++;
 			#endregion
-			return new FormattedStringGenerator() { Expressions = __exprs.ToArray() };
+			return new FormattedStringGenerator { Expressions = exprs.ToArray() };
 		}
-		public static unsafe StringExpression ParseStringE(ref char* _from, out int _outcount, int _max_count) {
+
+	    private static unsafe StringExpression ParseStringE(ref char* @from, out int outcount, int maxCount) {
 			/*
 			* TODO: add string validation
 			*/
 			#region Variables
-			int __cnt = 0;
-			char* __end = _from + _max_count;
-			_outcount = 0;
+
+		    var end = @from + maxCount;
+			outcount = 0;
 			var exp = new StringExpression();
 			#endregion
 			#region Parse Format
-			switch ( *( _from += 2 ) ) {
+			switch ( *( @from += 2 ) ) {
 				case 'D':
 					exp.Format = StringFormat.Decimal;
 					break;
@@ -215,82 +215,83 @@ namespace RandomStringGenerator
 				default: throw new FormatException("Bad string format");
 			}
 			#endregion
-			_from += 2;//skip format+separator
-			_outcount += 4;//total move
+			@from += 2;//skip format+separator
+			outcount += 4;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Generators.FindChar(_from, __end, ':');
+			var cnt = Generators.FindChar(@from, end, ':');
 			//parse min length
-			exp.Min = Generators.QIntParse(_from, __cnt);
-			_from += __cnt + 1;//skip separator
-			_outcount += __cnt + 1;//add skip 4 min
+			exp.Min = Generators.QIntParse(@from, cnt);
+			@from += cnt + 1;//skip separator
+			outcount += cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Generators.FindChar(_from, __end, '}');
-			exp.Max = Generators.QIntParse(_from, __cnt);
-			_from += __cnt;
-			_outcount += __cnt;
+			cnt = Generators.FindChar(@from, end, '}');
+			exp.Max = Generators.QIntParse(@from, cnt);
+			@from += cnt;
+			outcount += cnt;
 			//skip closing bracket
 			//_from++;
 			#endregion
 			return exp;
 		}
-		public static unsafe CharExpression ParseCharE(ref char* _from, out int _outcount, int _max_count) {
+
+	    private static unsafe CharExpression ParseCharE(ref char* @from, out int outcount, int maxCount) {
 			/*
 			* TODO: add string validation
 			*/
 			#region Variables
-			int __cnt = 0;
-			char* __end = _from + _max_count;
+
+		    var end = @from + maxCount;
 			var exp = new CharExpression();
 			#endregion
-			_from += 2;//skip format+separator
-			_outcount = 2;//total move
+			@from += 2;//skip format+separator
+			outcount = 2;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Generators.FindChar(_from, __end, ':');
+			var cnt = Generators.FindChar(@from, end, ':');
 			//parse min length
-			exp.Min = Generators.QIntParse(_from, __cnt);
-			_from += __cnt + 1;//skip separator
-			_outcount += __cnt + 1;//add skip 4 min
+			exp.Min = Generators.QIntParse(@from, cnt);
+			@from += cnt + 1;//skip separator
+			outcount += cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Generators.FindChar(_from, __end, '}');
-			exp.Max = Generators.QIntParse(_from, __cnt);
-			_from += __cnt;
-			_outcount += __cnt;
+			cnt = Generators.FindChar(@from, end, '}');
+			exp.Max = Generators.QIntParse(@from, cnt);
+			@from += cnt;
+			outcount += cnt;
 			//skip closing bracket
 			//_from++;
 			#endregion
 			return exp;
 		}
-		internal static unsafe IExpression ExpresionSelect(ref char* _from, out int _outcount, int _max_count, ASCIIEncoding _enc = null) {
-			if ( _enc == null )
-				_enc = new ASCIIEncoding();
-			_outcount = 0;
-			_max_count--;
+
+	    private static unsafe IExpression ExpresionSelect(ref char* @from, out int outcount, int maxCount, ASCIIEncoding enc = null) {
+			enc = enc ?? new ASCIIEncoding();
+			outcount = 0;
+			maxCount--;
 			IExpression expr;
 			#region Parse
-			switch ( *++_from ) {
+			switch ( *++@from ) {
 				case 'I':
-					expr = ParseIntE(ref _from, out _outcount, _max_count);//works
+					expr = ParseIntE(ref @from, out outcount, maxCount);//works
 					break;
 				case 'C':
-					expr = ParseCharE(ref _from, out _outcount, _max_count);
+					expr = ParseCharE(ref @from, out outcount, maxCount);
 					break;
 				case 'S':
-					expr = ParseStringE(ref _from, out _outcount, _max_count);
+					expr = ParseStringE(ref @from, out outcount, maxCount);
 					break;
 				case 'R':
-					expr = ParseRepeatE(ref _from, out _outcount, _max_count, _enc);//works
+					expr = ParseRepeatE(ref @from, out outcount, maxCount, enc);//works
 					break;
 				default:
 					throw new FormatException("Not supported expression");
 			}
 			#endregion
-			_outcount++;
+			outcount++;
 			return expr;
 		}
 	}
