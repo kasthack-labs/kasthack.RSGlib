@@ -68,11 +68,11 @@ namespace RandomStringGenerator
 			_from += 3;
 			_outcount += 6;
 			int __cnt = 0;
-			__cnt = Functions.FindChar(_from, (char*)( _from + _maxcount - _outcount ), ':');
-			exp.Min = Functions.QIntParse(_from, __cnt);
+			__cnt = Generators.FindChar(_from, (char*)( _from + _maxcount - _outcount ), ':');
+			exp.Min = Generators.QIntParse(_from, __cnt);
 			_from += __cnt + 1;
-			__cnt = Functions.FindChar(_from, (char*)( _from + _maxcount - _outcount ), '}');
-			exp.Max = Functions.QIntParse(_from, __cnt);
+			__cnt = Generators.FindChar(_from, (char*)( _from + _maxcount - _outcount ), '}');
+			exp.Max = Generators.QIntParse(_from, __cnt);
 			_from += __cnt;
 			return exp;
 		}
@@ -113,16 +113,16 @@ namespace RandomStringGenerator
 			_outcount += 4;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Functions.FindChar(_from, __end, ':');
+			__cnt = Generators.FindChar(_from, __end, ':');
 			//parse min length
-			exp.Min = Functions.QIntParse(_from, __cnt);
+			exp.Min = Generators.QIntParse(_from, __cnt);
 			_from += __cnt + 1;//skip separator
 			_outcount += __cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Functions.FindChar(_from, __end, '}');
-			exp.Max = Functions.QIntParse(_from, __cnt);
+			__cnt = Generators.FindChar(_from, __end, '}');
+			exp.Max = Generators.QIntParse(_from, __cnt);
 			_from += __cnt;
 			_outcount += __cnt;
 			//skip closing bracket
@@ -219,16 +219,16 @@ namespace RandomStringGenerator
 			_outcount += 4;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Functions.FindChar(_from, __end, ':');
+			__cnt = Generators.FindChar(_from, __end, ':');
 			//parse min length
-			exp.Min = Functions.QIntParse(_from, __cnt);
+			exp.Min = Generators.QIntParse(_from, __cnt);
 			_from += __cnt + 1;//skip separator
 			_outcount += __cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Functions.FindChar(_from, __end, '}');
-			exp.Max = Functions.QIntParse(_from, __cnt);
+			__cnt = Generators.FindChar(_from, __end, '}');
+			exp.Max = Generators.QIntParse(_from, __cnt);
 			_from += __cnt;
 			_outcount += __cnt;
 			//skip closing bracket
@@ -249,16 +249,16 @@ namespace RandomStringGenerator
 			_outcount = 2;//total move
 			#region Parse Min
 			//get min value length
-			__cnt = Functions.FindChar(_from, __end, ':');
+			__cnt = Generators.FindChar(_from, __end, ':');
 			//parse min length
-			exp.Min = Functions.QIntParse(_from, __cnt);
+			exp.Min = Generators.QIntParse(_from, __cnt);
 			_from += __cnt + 1;//skip separator
 			_outcount += __cnt + 1;//add skip 4 min
 			#endregion
 			#region Parse Max
 			//same for max
-			__cnt = Functions.FindChar(_from, __end, '}');
-			exp.Max = Functions.QIntParse(_from, __cnt);
+			__cnt = Generators.FindChar(_from, __end, '}');
+			exp.Max = Generators.QIntParse(_from, __cnt);
 			_from += __cnt;
 			_outcount += __cnt;
 			//skip closing bracket

@@ -27,7 +27,7 @@ namespace RandomStringGenerator
 			return new string(GetChars());
 		}
 		public byte[] GetAsciiBytes() {
-			return GetAsciiBytes(Functions.random.Next(_Min, _Max));
+			return GetAsciiBytes(Generators.random.Next(_Min, _Max));
 		}
 		public unsafe byte[] GetAsciiBytes(int _RepeatCount) {
 			if ( _RepeatCount == 0 )
@@ -61,7 +61,7 @@ namespace RandomStringGenerator
 			return __buffer;
 		}
 		public char[] GetChars() {
-			return GetChars(Functions.random.Next(_Min, _Max));
+			return GetChars(Generators.random.Next(_Min, _Max));
 		}
 		public unsafe char[] GetChars(int _RepeatCount) {
 			//same as get ascii bytes but with chars
@@ -96,7 +96,7 @@ namespace RandomStringGenerator
 			return __buffer;
 		}
 		public byte[] GetEncodingBytes(Encoding _enc) {
-			return GetEncodingBytes(_enc, Functions.random.Next(_Min, _Max));
+			return GetEncodingBytes(_enc, Generators.random.Next(_Min, _Max));
 		}
 		public unsafe byte[] GetEncodingBytes(Encoding _enc, int _RepeatCount) {
 			//return Functions.GetT<byte>(_RepeatCount, a => a.GetEncodingBytes(_enc), this.Expressions);
@@ -112,16 +112,16 @@ namespace RandomStringGenerator
 			return GetString();
 		}
 		public System.Collections.Generic.IEnumerable<byte[]> EnumAsciiBuffers() {
-			return Enumerable.Range(0, Functions.random.Next(_Min, _Max)).SelectMany(a => Expressions.SelectMany(b => b.EnumAsciiBuffers())).ToArray();
+			return Enumerable.Range(0, Generators.random.Next(_Min, _Max)).SelectMany(a => Expressions.SelectMany(b => b.EnumAsciiBuffers())).ToArray();
 		}
 		public System.Collections.Generic.IEnumerable<string> EnumStrings() {
-			return Enumerable.Range(0, Functions.random.Next(_Min, _Max)).
+			return Enumerable.Range(0, Generators.random.Next(_Min, _Max)).
 			SelectMany(
 			 a => Expressions.SelectMany(b => b.EnumStrings())
 			);
 		}
 		public unsafe void ComputeStringLength(ref int* _outputdata) {
-			int __len = Expressions.Length, __value = Functions.random.Next(_Min, _Max);
+			int __len = Expressions.Length, __value = Generators.random.Next(_Min, _Max);
 			*_outputdata++ = __value;
 			*_outputdata++ = -__value;
 			for (int __j=0;__j<__value;__j++)
