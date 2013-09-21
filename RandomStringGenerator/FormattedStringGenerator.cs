@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 namespace RandomStringGenerator
 {
 	public class FormattedStringGenerator : IExpression

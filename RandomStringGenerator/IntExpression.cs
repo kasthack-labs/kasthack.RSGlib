@@ -30,24 +30,24 @@ namespace RandomStringGenerator
 		/// </summary>
 		/// <returns>string result</returns>
 		public string GetString() {
-			return new string(Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.random.Next(_Min, _Max)) :
-			  Generators.IntToHexString(Generators.random.Next(_Min, _Max)));
+			return new string(Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.Random.Next(_Min, _Max)) :
+			  Generators.IntToHexString(Generators.Random.Next(_Min, _Max)));
 		}
 		/// <summary>
 		/// Get char array representation of expression execution result
 		/// </summary>
 		/// <returns>char[] result</returns>
 		public char[] GetChars() {
-			return Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.random.Next(_Min, _Max)) :
-			  Generators.IntToHexString(Generators.random.Next(_Min, _Max));
+			return Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.Random.Next(_Min, _Max)) :
+			  Generators.IntToHexString(Generators.Random.Next(_Min, _Max));
 		}
 		/// <summary>
 		/// Get native representation of expression execution result
 		/// </summary>
 		/// <returns>ascii bytes</returns>
 		public byte[] GetAsciiBytes() {
-			return Format == NumberFormat.Decimal ? Generators.IntToDecStringBytes(Generators.random.Next(_Min, _Max)) :
-			  Generators.IntToHexStringBytes(Generators.random.Next(_Min, _Max));
+			return Format == NumberFormat.Decimal ? Generators.IntToDecStringBytes(Generators.Random.Next(_Min, _Max)) :
+			  Generators.IntToHexStringBytes(Generators.Random.Next(_Min, _Max));
 		}
 		/// <summary>
 		/// Get bytes of result encoded with encoding
@@ -55,8 +55,8 @@ namespace RandomStringGenerator
 		/// <param name="_enc">encoding for encoding, lol</param>
 		/// <returns>bytes</returns>
 		public byte[] GetEncodingBytes(Encoding enc) {
-			return enc.GetBytes(Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.random.Next(_Min, _Max)) :
-			  Generators.IntToHexString(Generators.random.Next(_Min, _Max)));
+			return enc.GetBytes(Format == NumberFormat.Decimal ? Generators.IntToDecString(Generators.Random.Next(_Min, _Max)) :
+			  Generators.IntToHexString(Generators.Random.Next(_Min, _Max)));
 		}
 		/// <summary>
 		/// alias 4 GetString. 4 debugging
@@ -72,7 +72,7 @@ namespace RandomStringGenerator
 			return new string[] { GetString() };
 		}
 		public unsafe void ComputeStringLength(ref int* _outputdata) {
-			int __value = Generators.random.Next(_Min, _Max);
+			int __value = Generators.Random.Next(_Min, _Max);
 			*_outputdata++ = __value;
 			*_outputdata++ = Format == NumberFormat.Decimal ? Generators.GetDecStringLength(__value) : Generators.GetHexStringLength(__value);
 			*_outputdata++ = -__value;
@@ -87,7 +87,7 @@ namespace RandomStringGenerator
 				_OutputBuffer -= *_Size++;
 				return;
 			}
-			fixed (byte* __hex_pointer = Generators._hex_chars_bytes)
+			fixed (byte* __hex_pointer = Generators.HexCharsBytes)
 				Generators.IntToHexStringBytesInsert(_OutputBuffer, __hex_pointer, *_Size++, (byte)*_Size++);
 			_OutputBuffer -= *_Size++;
 		}
@@ -97,7 +97,7 @@ namespace RandomStringGenerator
 				_OutputBuffer -= *_Size++;
 				return;
 			}
-			fixed ( char* __hex_pointer = Generators._hex_chars )
+			fixed ( char* __hex_pointer = Generators.HexChars )
 				Generators.IntToHexStringInsert(_OutputBuffer, __hex_pointer, *_Size++, (byte)*_Size++);
 			_OutputBuffer -= *_Size++;
 		}

@@ -244,13 +244,13 @@ namespace RandomStringGenerator {
         }
         public static unsafe void RandomASCIIBytesInsert( byte* ptr, int len, byte* source, int maxindex ) {
             maxindex++;
-            byte* end = ptr + len;
+            var end = ptr + len;
             while ( ptr < end ) *ptr++ = *( source + Random.Next( maxindex ) );
         }
         public static unsafe void RandomUTFURLEncodeStringInsert( char* ptr, int realLen ) {
-            char* end = ( ptr + realLen * 6 );
+            var end = ( ptr + realLen * 6 );
             ushort __rnd;
-            const char __pc = '%';
+            const char pc = '%';
 
             uint bfr = 0;
             byte havenums = 0;
@@ -264,10 +264,10 @@ namespace RandomStringGenerator {
                         __rnd = (ushort) ( bfr >> 16 );
                     }
                     //indexing to use out-of-order optimizations
-                    *( ptr + 1 ) = __pc;
-                    *( ptr + 4 ) = __pc;
+                    *( ptr + 1 ) = pc;
                     *( ptr + 2 ) = *( hexChars + ( __rnd & 0xf ) );
                     *( ptr + 3 ) = *( hexChars + ( ( __rnd >> 4 ) & 0xf ) );
+                    *( ptr + 4 ) = pc;
                     *( ptr + 5 ) = *( hexChars + ( ( __rnd >> 8 ) & 0xf ) );
                     *( ptr + 6 ) = *( hexChars + ( ( __rnd >> 12 ) & 0xf ) );
                     ptr += 6;

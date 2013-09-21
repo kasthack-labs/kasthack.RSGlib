@@ -28,19 +28,19 @@ namespace RandomStringGenerator
 		public byte[] GetAsciiBytes() {
 			switch ( Format ) {
 				case StringFormat.Decimal:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._hex_chars_bytes, 0, 9);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.HexCharsBytes, 0, 9);
 				case StringFormat.Hexadecimal:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._hex_chars_bytes, 0, 15);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.HexCharsBytes, 0, 15);
 				case StringFormat.Letters:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._ascii_chars_bytes, 10, 61);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.ASCIICharsBytes, 10, 61);
 				case StringFormat.LowerCase:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._ascii_chars_bytes, 10, 35);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.ASCIICharsBytes, 10, 35);
 				case StringFormat.Random:
 					return Generators.RandomASCIIBytes(Min, Max);
 				case StringFormat.Std:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._ascii_chars_bytes, 0, 61);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.ASCIICharsBytes, 0, 61);
 				case StringFormat.UpperCase:
-					return Generators.RandomASCIIBytes(Min, Max, Generators._ascii_chars_bytes, 36, 61);
+					return Generators.RandomASCIIBytes(Min, Max, Generators.ASCIICharsBytes, 36, 61);
 				case StringFormat.Urlencode:
 					return Generators.RandomUTFURLEncodeStringBytes(Min, Max);
 				default:
@@ -51,25 +51,25 @@ namespace RandomStringGenerator
 			byte[] output;
 			switch ( Format ) {
 				case StringFormat.Decimal:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 9));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 9));
 					break;
 				case StringFormat.Hexadecimal:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 15));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 15));
 					break;
 				case StringFormat.Letters:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 61));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 61));
 					break;
 				case StringFormat.LowerCase:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 35));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 35));
 					break;
 				case StringFormat.Random:
 					output = enc.GetBytes(Generators.RandomASCII(Min, Max));
 					break;
 				case StringFormat.Std:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 0, 61));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 0, 61));
 					break;
 				case StringFormat.UpperCase:
-					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 36, 61));
+					output = enc.GetBytes(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 36, 61));
 					break;
 				case StringFormat.Urlencode:
 					output = enc.GetBytes(Generators.RandomUTFURLEncodeString(Min, Max));
@@ -82,19 +82,19 @@ namespace RandomStringGenerator
 		public char[] GetChars() {
 			switch ( Format ) {
 				case StringFormat.Decimal:
-					return Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 9);
+					return Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 9);
 				case StringFormat.Hexadecimal:
-					return Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 15);
+					return Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 15);
 				case StringFormat.Letters:
-					return Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 61);
+					return Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 61);
 				case StringFormat.LowerCase:
-					return Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 35);
+					return Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 35);
 				case StringFormat.Random:
 					return Generators.RandomASCII(Min, Max);
 				case StringFormat.Std:
-					return Generators.RandomASCII(Min, Max, Generators._ascii_chars, 0, 61);
+					return Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 0, 61);
 				case StringFormat.UpperCase:
-					return Generators.RandomASCII(Min, Max, Generators._ascii_chars, 36, 61);
+					return Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 36, 61);
 				case StringFormat.Urlencode:
 					return Generators.RandomUTFURLEncodeString(Min, Max);
 				default:
@@ -104,19 +104,19 @@ namespace RandomStringGenerator
 		public string GetString() {
 			switch ( Format ) {
 				case StringFormat.Decimal:
-					return new string(Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 9));
+					return new string(Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 9));
 				case StringFormat.Hexadecimal:
-					return new string(Generators.RandomASCII(Min, Max, Generators._hex_chars, 0, 15));
+					return new string(Generators.RandomASCII(Min, Max, Generators.HexChars, 0, 15));
 				case StringFormat.Letters:
-					return new string(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 61));
+					return new string(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 61));
 				case StringFormat.LowerCase:
-					return new string(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 10, 35));
+					return new string(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 10, 35));
 				case StringFormat.Random:
 					return new string(Generators.RandomASCII(Min, Max));
 				case StringFormat.Std:
-					return new string(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 0, 61));
+					return new string(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 0, 61));
 				case StringFormat.UpperCase:
-					return new string(Generators.RandomASCII(Min, Max, Generators._ascii_chars, 36, 61));
+					return new string(Generators.RandomASCII(Min, Max, Generators.ASCIIChars, 36, 61));
 				case StringFormat.Urlencode:
 					return new string(Generators.RandomUTFURLEncodeString(Min, Max));
 				default:
@@ -133,14 +133,14 @@ namespace RandomStringGenerator
 			return new string[] { GetString() };
 		}
 		public unsafe void ComputeStringLength(ref int* outputdata) {
-			*outputdata++ = Generators.random.Next(_Min, _Max) * ( Format == StringFormat.Urlencode ? 6 : 1 );
+			*outputdata++ = Generators.Random.Next(_Min, _Max) * ( Format == StringFormat.Urlencode ? 6 : 1 );
 		}
 		public int ComputeMaxLenForSize() {
 			return 1;
 		}
 		public unsafe void GetAsciiBytesInsert(ref int* _Size, ref byte* _OutputBuffer) {
 			int __len = *_Size++;
-			fixed(byte* __chars = Generators._ascii_chars_bytes)
+			fixed(byte* __chars = Generators.ASCIICharsBytes)
 			switch ( Format ) {
 				case StringFormat.Decimal:
 					Generators.RandomASCIIBytesInsert(_OutputBuffer, __len, __chars, 9);
@@ -173,7 +173,7 @@ namespace RandomStringGenerator
 		}
 		public unsafe void GetAsciiInsert(ref int* _Size, ref char* _OutputBuffer) {
 			int __len = *_Size++;
-			fixed ( char* __chars = Generators._ascii_chars )
+			fixed ( char* __chars = Generators.ASCIIChars )
 				switch ( Format ) {
 					case StringFormat.Decimal:
 						Generators.RandomASCIIInsert(_OutputBuffer, __len, __chars, 9);

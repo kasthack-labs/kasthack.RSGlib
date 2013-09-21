@@ -23,16 +23,16 @@ namespace RandomStringGenerator {
 		public CharExpression() {
 		}
 		public byte[] GetAsciiBytes() {
-			return new byte[] { (byte)Generators.random.Next( _Min, _Max ) };
+			return new byte[] { (byte)Generators.Random.Next( _Min, _Max ) };
 		}
 		public char[] GetChars() {
-			return new char[] { (char)Generators.random.Next( _Min, _Max ) };
+			return new char[] { (char)Generators.Random.Next( _Min, _Max ) };
 		}
 		public byte[] GetEncodingBytes( Encoding enc ) {
-			return enc.GetBytes( new char[] { (char)Generators.random.Next( _Min, _Max ) } );
+			return enc.GetBytes( new char[] { (char)Generators.Random.Next( _Min, _Max ) } );
 		}
 		public string GetString() {
-			return ( (char)Generators.random.Next( _Min, _Max ) ).ToString();
+			return ( (char)Generators.Random.Next( _Min, _Max ) ).ToString();
 		}
 		public override string ToString() {
 			return GetString();
@@ -50,11 +50,11 @@ namespace RandomStringGenerator {
 			return 1;
 		}
 		public unsafe void GetAsciiBytesInsert( ref int* _Size, ref byte* _OutputBuffer ) {
-			*_OutputBuffer++ = (byte)Generators.random.Next( _Min, _Max );
+			*_OutputBuffer++ = (byte)Generators.Random.Next( _Min, _Max );
 			_Size++;
 		}
 		public unsafe void GetAsciiInsert( ref int* _Size, ref char* _OutputBuffer ) {
-			*_OutputBuffer++ = (char)Generators.random.Next( _Min, _Max );
+			*_OutputBuffer++ = (char)Generators.Random.Next( _Min, _Max );
 			_Size++;
 		}
 	}
