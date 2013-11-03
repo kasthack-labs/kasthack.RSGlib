@@ -6,8 +6,6 @@ String generator from GAS
 #HELP
 ##====String generator====
 ###Random string generator syntax:
-1. Warning! Expression string will NOT be validated
-2. 2+ level expressions are  **VERY SLOW**.(fixed in SHA: fca92cd0d52380e39e1a7a255914d4da297488e0 )
 
 ####Integer
 * Validator Regex: \\{I\:[DH]\:[0-9]+\:[0-9]+\\}
