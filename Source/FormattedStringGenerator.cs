@@ -26,12 +26,12 @@ namespace RandomStringGenerator
                 return Expressions[ 0 ].GetChars();
             var outsize = 0;
             int* s;
-            var sizeBuf = new int[this.ComputeMaxLenForSize()]; //buffer 4 sizes
+            var sizeBuf = new int[this.ComputeLengthDataSize()]; //buffer 4 sizes
             long rcount;
             //get generation data
             fixed ( int* szb = sizeBuf ) {
                 s = szb;
-                ComputeStringLength(ref s);
+                GetInsertLength(ref s);
                 rcount = s - szb;
             }
             //compute output length
@@ -42,7 +42,7 @@ namespace RandomStringGenerator
                 fixed ( char* outb = buffer ) {
                     s = szb;
                     var b = outb;
-                    GetAsciiInsert(ref s, ref b);
+                    InsertAsciiChars(ref s, ref b);
                 }
             return buffer;
         }
@@ -68,15 +68,15 @@ namespace RandomStringGenerator
         }
         public System.Collections.Generic.IEnumerable<byte[]> EnumAsciiBuffers() { return Expressions.SelectMany(a => a.EnumAsciiBuffers()); }
         public System.Collections.Generic.IEnumerable<string> EnumStrings() { return Expressions.SelectMany(a => a.EnumStrings()); }
-        public unsafe void ComputeStringLength(ref int* outputdata) {
+        public unsafe void GetInsertLength(ref int* outputdata) {
             var len = Expressions.Length;
             for (var i = 0; i < len; i++)
-                Expressions[ i ].ComputeStringLength(ref outputdata);
+                Expressions[ i ].GetInsertLength(ref outputdata);
         }
-        public int ComputeMaxLenForSize() {
+        public int ComputeLengthDataSize() {
             int sum = 0, len = Expressions.Length;
             for (var i = 0; i < len; i++)
-                sum += Expressions[ i ].ComputeMaxLenForSize();
+                sum += Expressions[ i ].ComputeLengthDataSize();
             return sum;
         }
         public unsafe byte[] GetAsciiBytes() {
@@ -85,12 +85,12 @@ namespace RandomStringGenerator
                 return Expressions[ 0 ].GetAsciiBytes();
             var outsize = 0;
             int* s;
-            var sizeBuf = new int[this.ComputeMaxLenForSize()]; //buffer 4 sizes
+            var sizeBuf = new int[this.ComputeLengthDataSize()]; //buffer 4 sizes
             long rcount;
             //get generation data
             fixed ( int* szb = sizeBuf ) {
                 s = szb;
-                ComputeStringLength(ref s);
+                GetInsertLength(ref s);
                 rcount = s - szb;
             }
             //compute output length
@@ -101,18 +101,18 @@ namespace RandomStringGenerator
                 fixed ( byte* outb = buffer ) {
                     s = szb;
                     var b = outb;
-                    GetAsciiBytesInsert(ref s, ref b);
+                    InsertAsciiBytes(ref s, ref b);
                 }
             return buffer;
         }
-        public unsafe void GetAsciiBytesInsert(ref int* size, ref byte* outputBuffer) {
+        public unsafe void InsertAsciiBytes(ref int* size, ref byte* outputBuffer) {
             var len = Expressions.Length;
             for (var i = 0; i < len; i++)
-                Expressions[ i ].GetAsciiBytesInsert(ref size, ref outputBuffer);
+                Expressions[ i ].InsertAsciiBytes(ref size, ref outputBuffer);
         }
-        public unsafe void GetAsciiInsert(ref int* size, ref char* outputBuffer) {
+        public unsafe void InsertAsciiChars(ref int* size, ref char* outputBuffer) {
             var len = Expressions.Length;
-            for (var i = 0; i < len; Expressions[ i++ ].GetAsciiInsert(ref size, ref outputBuffer)) {}
+            for (var i = 0; i < len; Expressions[ i++ ].InsertAsciiChars(ref size, ref outputBuffer)) {}
         }
         /// <summary>
         /// alias 4 GetString. 4 debugging

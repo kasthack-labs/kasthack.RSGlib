@@ -189,13 +189,13 @@ namespace RandomStringGenerator
             }
             return pos ? sum : -sum;
         }
-        public static unsafe int FindChar(char* @from, char* end, char c) {
+        public static unsafe int FindChar(char* start, char* end, char c) {
             var cnt = 0;
-            while( @from < end && *@from != c ) {
-                cnt++;
-                @from++;
+            while( start < end && *start != c ) {
+                ++cnt;
+                ++start;
             }
-            return cnt;
+            return start<end?cnt:-1;
         }
         /*generators with pointers*/
         public static unsafe void RandomUTFURLEncodeStringBytesInsert(byte* ptr, int realLen) {
