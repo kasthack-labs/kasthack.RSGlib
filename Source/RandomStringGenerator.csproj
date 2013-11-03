@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Expressions\CharExpression.cs" />
     <Compile Include="ExpressionParser.cs" />
-    <Compile Include="FormattedStringGenerator.cs" />
+    <Compile Include="Expressions\MultiExpression.cs" />
     <Compile Include="Helpers\Generators.cs" />
     <Compile Include="IExpression.cs" />
     <Compile Include="Expressions\IntExpression.cs" />

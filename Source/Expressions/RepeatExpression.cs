@@ -2,10 +2,13 @@
 // Written by kasthack
 // ( 2013.09.21 )
 
+using System;
 using System.Linq;
 using System.Text;
+using RandomStringGenerator.Helpers;
 
 namespace RandomStringGenerator.Expressions {
+    [Serializable]
     public class RepeatExpression : IExpression {
         public IExpression[] Expressions;
         private int _max;
@@ -16,17 +19,6 @@ namespace RandomStringGenerator.Expressions {
         public byte[] GetAsciiBytes() { return this.GetAsciiBytes( Generators.Random.Next( this._min, this._max ) ); }
         public char[] GetChars() { return this.GetChars( Generators.Random.Next( this._min, this._max ) ); }
         public byte[] GetEncodingBytes( Encoding enc ) { return this.GetEncodingBytes( enc, Generators.Random.Next( this._min, this._max ) ); }
-        public System.Collections.Generic.IEnumerable<byte[]> EnumAsciiBuffers() {
-            return Enumerable.Range( 0, Generators.Random.Next( this._min, this._max ) ).
-                              SelectMany( a => this.Expressions.SelectMany( b => b.EnumAsciiBuffers() ) ).
-                              ToArray();
-        }
-        public System.Collections.Generic.IEnumerable<string> EnumStrings() {
-            return Enumerable.Range( 0, Generators.Random.Next( this._min, this._max ) ).
-                              SelectMany(
-                                         a => this.Expressions.SelectMany( b => b.EnumStrings() )
-                );
-        }
         public unsafe void GetInsertLength( ref int* outputdata ) {
             int len = this.Expressions.Length, value = Generators.Random.Next( this._min, this._max );
             *outputdata++ = value;
@@ -55,6 +47,21 @@ namespace RandomStringGenerator.Expressions {
                 for ( var i = 0; i < len; i++ )
                     this.Expressions[ i ].InsertAsciiChars( ref size, ref outputBuffer );
         }
+
+        /// <summary>
+        /// Show string from which it was compiled
+        /// </summary>
+        /// <returns></returns>
+        public string Decompile() {
+            return String.Format(
+                                 @"{0}R:{0}{2}{1}:{3}:{4}{1}",
+                                 '{',
+                                 '}',
+                                 String.Concat(Expressions.Select(a => a.Decompile())),
+                                 this.Min,
+                                 this.Max);
+        }
+
         public unsafe byte[] GetAsciiBytes( int repeatCount ) {
             if ( repeatCount == 0 ) return new byte[] { };
             if ( this.Expressions.Length == 1 && repeatCount == 1 )
@@ -113,8 +120,12 @@ namespace RandomStringGenerator.Expressions {
         }
         public byte[] GetEncodingBytes( Encoding enc, int repeatCount ) {
             //return Functions.GetT<byte>(_RepeatCount, a => a.GetEncodingBytes(_enc), this.Expressions);
-            return this.Expressions.SelectMany( a => a.GetEncodingBytes( enc ) ).
-                        ToArray();
+            return Enumerable
+                .Range( 0, repeatCount ).SelectMany( b => this
+                    .Expressions
+                    .SelectMany( a => a.GetEncodingBytes( enc ) )
+                )
+                .ToArray();
         }
         private int CompLen() {
             int sum = 0, len = this.Expressions.Length;

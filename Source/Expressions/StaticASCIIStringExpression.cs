@@ -3,11 +3,11 @@
 // ( 2013.09.21 )
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace RandomStringGenerator.Expressions {
+    [Serializable]
     public class StaticASCIIStringExpression : IExpression {
         private readonly byte[] _buf;
         private readonly ASCIIEncoding _enc;
@@ -24,7 +24,6 @@ namespace RandomStringGenerator.Expressions {
             this._enc = enc ?? new ASCIIEncoding();
             this._buf = str;
         }
-        
         public char[] GetChars() { return this._enc.GetChars( this._buf ); }
         public byte[] GetAsciiBytes() { return this._buf; }
         public byte[] GetEncodingBytes( Encoding enc ) { return enc.GetBytes( this._enc.GetChars( this._buf ) ); }
@@ -45,6 +44,15 @@ namespace RandomStringGenerator.Expressions {
                 while ( start < end );
             }
         }
-        public override string ToString() { return this.GetString(); }
+
+        /// <summary>
+        /// Show string from which it was compiled
+        /// </summary>
+        /// <returns></returns>
+        public string Decompile() {
+            return this.ToString();
+        }
+
+        public override string ToString() { return this._enc.GetString( this._buf ); }
     }
 }

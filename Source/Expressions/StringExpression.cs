@@ -4,16 +4,18 @@
 
 using System;
 using System.Text;
+using RandomStringGenerator.Helpers;
 
 namespace RandomStringGenerator.Expressions {
+    [Serializable]
     public class StringExpression : IExpression {
         public StringFormat Format;
         private int _max;
         private int _min;
         [System.Diagnostics.DebuggerNonUserCode]
         public StringExpression() { }
-        public int Min { private get { return this._min; } set { this._min = value + 1; } }
-        public int Max { get { return this._max; } set { this._max = value + 1; } }
+        public int Min { private get { return this._min; } set { this._min = value; } }
+        public int Max { get { return this._max - 1; } set { this._max = value + 1; } }
         public byte[] GetAsciiBytes() {
             switch ( this.Format ) {
                 case StringFormat.Decimal:
@@ -90,34 +92,10 @@ namespace RandomStringGenerator.Expressions {
                     throw new ArgumentException( "Bad string format" );
             }
         }
-        public string GetString() {
-            switch ( this.Format ) {
-                case StringFormat.Decimal:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.HexChars, 0, 9 ) );
-                case StringFormat.Hexadecimal:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.HexChars, 0, 15 ) );
-                case StringFormat.Letters:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 10, 61 ) );
-                case StringFormat.LowerCase:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 10, 35 ) );
-                case StringFormat.Random:
-                    return new string( Generators.RandomASCII( this.Min, this.Max ) );
-                case StringFormat.Std:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 0, 61 ) );
-                case StringFormat.UpperCase:
-                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 36, 61 ) );
-                case StringFormat.Urlencode:
-                    return new string( Generators.RandomUTFURLEncodeString( this.Min, this.Max ) );
-                default:
-                    throw new ArgumentException( "Bad string format" );
-            }
-        }
-        public System.Collections.Generic.IEnumerable<byte[]> EnumAsciiBuffers() { return new[] { this.GetAsciiBytes() }; }
-        public System.Collections.Generic.IEnumerable<string> EnumStrings() { return new string[] { this.GetString() }; }
         public unsafe void GetInsertLength( ref int* outputdata ) { *outputdata++ = Generators.Random.Next( this._min, this._max ) * ( this.Format == StringFormat.Urlencode ? 6 : 1 ); }
         public int ComputeLengthDataSize() { return 1; }
         public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
-            int len = *size++;
+            var len = *size++;
             fixed ( byte* chars = Generators.ASCIICharsBytes )
                 switch ( this.Format ) {
                     case StringFormat.Decimal:
@@ -150,7 +128,7 @@ namespace RandomStringGenerator.Expressions {
             outputBuffer += len;
         }
         public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
-            int len = *size++;
+            var len = *size++;
             fixed ( char* chars = Generators.ASCIIChars )
                 switch ( this.Format ) {
                     case StringFormat.Decimal:
@@ -182,6 +160,60 @@ namespace RandomStringGenerator.Expressions {
                 }
             outputBuffer += len;
         }
-        public override string ToString() { return this.GetString(); }
+        public string Decompile() {
+            char c;
+            switch ( this.Format ) {
+                case StringFormat.Decimal:
+                    c = 'D';
+                    break;
+                case StringFormat.Hexadecimal:
+                    c = 'H';
+                    break;
+                case StringFormat.Letters:
+                    c = 'L';
+                    break;
+                case StringFormat.LowerCase:
+                    c = 'a';
+                    break;
+                case StringFormat.Random:
+                    c = 'R';
+                    break;
+                case StringFormat.Std:
+                    c = 'S';
+                    break;
+                case StringFormat.UpperCase:
+                    c = 'A';
+                    break;
+                case StringFormat.Urlencode:
+                    c = 'U';
+                    break;
+                default:
+                    throw new ArgumentException( "Bad string format" );
+            }
+            return String.Format( @"{0}S:{2}:{3}:{4}{1}", @"{", @"}", c, this.Min, this.Max );
+        }
+
+        public override string ToString() {
+            switch ( this.Format ) {
+                case StringFormat.Decimal:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.HexChars, 0, 9 ) );
+                case StringFormat.Hexadecimal:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.HexChars, 0, 15 ) );
+                case StringFormat.Letters:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 10, 61 ) );
+                case StringFormat.LowerCase:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 10, 35 ) );
+                case StringFormat.Random:
+                    return new string( Generators.RandomASCII( this.Min, this.Max ) );
+                case StringFormat.Std:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 0, 61 ) );
+                case StringFormat.UpperCase:
+                    return new string( Generators.RandomASCII( this.Min, this.Max, Generators.ASCIIChars, 36, 61 ) );
+                case StringFormat.Urlencode:
+                    return new string( Generators.RandomUTFURLEncodeString( this.Min, this.Max ) );
+                default:
+                    throw new ArgumentException( "Bad string format" );
+            }
+        }
     }
 }

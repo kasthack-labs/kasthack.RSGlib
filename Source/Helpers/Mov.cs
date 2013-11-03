@@ -1,16 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace RandomStringGenerator.Helpers {
     internal unsafe struct Mov {
-        private char* _start;
-        private char* _end;
+        private readonly char* _start;
+        private readonly char* _end;
         private char* _current;
-        private int _read;
-
-        internal int Read {
-            get { return this._read; }
-        }
-
+        [DebuggerNonUserCode]
         internal char* Current {
             get { return this._current; }
             set {
@@ -19,31 +15,29 @@ namespace RandomStringGenerator.Helpers {
                 this._current = value;
             }
         }
-
+        [DebuggerNonUserCode]
         public char* End {
             get { return this._end; }
         }
-
-        public char* Start {
+        [DebuggerNonUserCode]
+        internal char* Start {
             get { return this._start; }
         }
-
+        [DebuggerNonUserCode]
         internal bool HasNext {
             get {
-                return this._end >= this._current;
+                return this._end > this._current;
             }
         }
-
-        internal char GetChar() {
-            ++this._read;
-            return *( this.Current++ );
+        [DebuggerNonUserCode]
+        internal char GetChar( bool increment = true ) {
+            return *( increment&&this.HasNext ? this.Current++ : this.Current );
         }
-
+        [DebuggerNonUserCode]
         internal Mov( char* start, int length ) {
             this._start = start;
             this._end = start + length;
             this._current = start;
-            this._read = 0;
         }
     }
 }
