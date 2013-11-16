@@ -13,7 +13,7 @@ namespace RandomStringGenerator.Expressions {
         public unsafe char[] GetChars() {
             if ( this.Expressions.Length == 1 )
                 return this.Expressions[ 0 ].GetChars();
-            var outsize = 0;
+            long outsize = 0;
             int* s;
             var sizeBuf = new int[ this.ComputeLengthDataSize() ]; //buffer 4 sizes
             long rcount;
@@ -22,6 +22,7 @@ namespace RandomStringGenerator.Expressions {
                 s = szb;
                 this.GetInsertLength( ref s );
                 rcount = s - szb;
+                System.Diagnostics.Debug.Assert( rcount <= sizeBuf.Length );
             }
             //compute output length
             for ( var i = 0; i < rcount; outsize += sizeBuf[ i++ ] ) { }

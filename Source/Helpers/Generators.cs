@@ -31,13 +31,13 @@ namespace RandomStringGenerator.Helpers {
         public static int QIntParse( char[] input ) { return QIntParse( input, 0, input.Length ); }
         public static long QLongParse( char[] input ) { return QLongParse( input, 0, input.Length ); }
         /*random strings*/
-        public static char[] RandomASCII( int minLen, int maxLen ) { return RandomASCII( minLen, maxLen, ASCIIChars, 0, ASCIIChars.Length - 1 ); }
-        public static char[] RandomASCII( int minLen, int maxLen, char[] source, int startindex, int maxindex ) { return RandomASCII( Random.Next( minLen, maxLen + 1 ), source, startindex, maxindex ); }
-        public static char[] RandomUTFURLEncodeString( int minRealLen, int maxRealLen ) { return RandomUTFURLEncodeString( Random.Next( minRealLen, maxRealLen ) ); }
+        public static char[] RandomAscii( int minLen, int maxLen ) { return RandomAscii( minLen, maxLen, ASCIIChars, 0, ASCIIChars.Length - 1 ); }
+        public static char[] RandomAscii( int minLen, int maxLen, char[] source, int startindex, int maxindex ) { return RandomAscii( Random.Next( minLen, maxLen + 1 ), source, startindex, maxindex ); }
+        public static char[] RandomUtfUrlEncodeString( int minRealLen, int maxRealLen ) { return RandomUtfUrlEncodeString( Random.Next( minRealLen, maxRealLen ) ); }
         /*random bytes*/
-        public static byte[] RandomASCIIBytes( int minLen, int maxLen ) { return RandomASCIIBytes( minLen, maxLen, ASCIICharsBytes, 0, ASCIICharsBytes.Length - 1 ); }
-        public static byte[] RandomASCIIBytes( int minLen, int maxLen, byte[] source, int startindex, int maxindex ) { return RandomASCIIBytes( Random.Next( minLen, maxLen + 1 ), source, startindex, maxindex ); }
-        public static byte[] RandomUTFURLEncodeStringBytes( int minRealLen, int maxRealLen ) { return RandomUTFURLEncodeStringBytes( Random.Next( minRealLen, maxRealLen ) ); }
+        public static byte[] RandomAsciiBytes( int minLen, int maxLen ) { return RandomAsciiBytes( minLen, maxLen, ASCIICharsBytes, 0, ASCIICharsBytes.Length - 1 ); }
+        public static byte[] RandomAsciiBytes( int minLen, int maxLen, byte[] source, int startindex, int maxindex ) { return RandomAsciiBytes( Random.Next( minLen, maxLen + 1 ), source, startindex, maxindex ); }
+        public static byte[] RandomUtfUrlEncodeStringBytes( int minRealLen, int maxRealLen ) { return RandomUtfUrlEncodeStringBytes( Random.Next( minRealLen, maxRealLen ) ); }
         #endregion
         #region unsafe Wrappers
         #region Parsers
@@ -122,30 +122,30 @@ namespace RandomStringGenerator.Helpers {
         }
         #endregion
         #region random chars
-        public static unsafe char[] RandomUTFURLEncodeString( int len ) {
+        public static unsafe char[] RandomUtfUrlEncodeString( int len ) {
             var output = new char[ len ];
             fixed ( char* outPointer = output )
-                RandomUTFURLEncodeStringInsert( outPointer, len );
+                RandomUtfUrlEncodeStringInsert( outPointer, len );
             return output;
         }
-        public static unsafe char[] RandomASCII( int len, char[] source, int startindex, int maxindex ) {
+        public static unsafe char[] RandomAscii( int len, char[] source, int startindex, int maxindex ) {
             var output = new char[ len ];
             fixed ( char* outPointer = output )
             fixed ( char* csource = source )
-                RandomASCIIInsert( outPointer, len, csource + startindex, maxindex - startindex );
+                RandomAsciiInsert( outPointer, len, csource + startindex, maxindex - startindex );
             return output;
         }
-        public static unsafe byte[] RandomUTFURLEncodeStringBytes( int realLen ) {
+        public static unsafe byte[] RandomUtfUrlEncodeStringBytes( int realLen ) {
             var output = new byte[ realLen ];
             fixed ( byte* outPointer = output )
                 RandomUTFURLEncodeStringBytesInsert( outPointer, realLen );
             return output;
         }
-        public static unsafe byte[] RandomASCIIBytes( int len, byte[] source, int startindex, int maxindex ) {
+        public static unsafe byte[] RandomAsciiBytes( int len, byte[] sourceArr, int startindex, int maxindex ) {
             var output = new byte[ len ];
             fixed ( byte* outPointer = output )
-            fixed ( byte* csource = source )
-                RandomASCIIBytesInsert( outPointer, len, csource + startindex, maxindex - startindex );
+            fixed ( byte* csource = sourceArr )
+                RandomAsciiBytesInsert( outPointer, len, csource + startindex, maxindex - startindex );
             return output;
         }
         #endregion
@@ -187,14 +187,14 @@ namespace RandomStringGenerator.Helpers {
             return start < end ? cnt : -1;
         }
         /*generators with pointers*/
-        public static unsafe void RandomUTFURLEncodeStringBytesInsert( byte* ptr, int realLen ) {
-            var end = ( ptr + realLen * 6 );
+        public static unsafe void RandomUTFURLEncodeStringBytesInsert( byte* outarr, int realLen ) {
+            var end = ( outarr + realLen * 6 );
             ushort rnd;
             const byte pc = (byte) '%';
             uint bfr = 0;
             byte havenums = 0;
             fixed ( byte* hexChars = HexCharsBytes )
-                while ( ptr < end ) {
+                while ( outarr < end ) {
                     //using temp uint to prevent unnecessary random generating
                     rnd = (ushort) bfr;
                     if ( havenums-- == 0 ) {
@@ -203,27 +203,27 @@ namespace RandomStringGenerator.Helpers {
                         rnd = (ushort) ( bfr >> 16 );
                     }
                     //indexing to use out-of-order optimizations
-                    *( ptr + 1 ) = pc;
-                    *( ptr + 2 ) = *( hexChars + ( rnd & 0xf ) );
-                    *( ptr + 3 ) = *( hexChars + ( ( rnd >> 4 ) & 0xf ) );
-                    *( ptr + 4 ) = pc;
-                    *( ptr + 5 ) = *( hexChars + ( ( rnd >> 8 ) & 0xf ) );
-                    *( ptr + 6 ) = *( hexChars + ( ( rnd >> 12 ) & 0xf ) );
-                    ptr += 6;
+                    *( outarr + 1 ) = pc;
+                    *( outarr + 2 ) = *( hexChars + ( rnd & 0xf ) );
+                    *( outarr + 3 ) = *( hexChars + ( ( rnd >> 4 ) & 0xf ) );
+                    *( outarr + 4 ) = pc;
+                    *( outarr + 5 ) = *( hexChars + ( ( rnd >> 8 ) & 0xf ) );
+                    *( outarr + 6 ) = *( hexChars + ( ( rnd >> 12 ) & 0xf ) );
+                    outarr += 6;
                 }
         }
-        public static unsafe void RandomASCIIBytesInsert( byte* ptr, int len, byte* source, int maxindex ) {
+        public static unsafe void RandomAsciiBytesInsert( byte* outarr, int len, byte* source, int maxindex ) {
             maxindex++;
-            var end = ptr + len;
-            while ( ptr < end ) *ptr++ = *( source + Random.Next( maxindex ) );
+            var end = outarr + len;
+            while ( outarr < end ) *outarr++ = *( source + Random.Next( maxindex ) );
         }
-        public static unsafe void RandomUTFURLEncodeStringInsert( char* ptr, int realLen ) {
-            var end = ( ptr + realLen * 6 );
+        public static unsafe void RandomUtfUrlEncodeStringInsert( char* outarr, int realLen ) {
+            var end = ( outarr + realLen * 6 );
             const char pc = '%';
             uint bfr = 0;
             byte havenums = 0;
             fixed ( char* hexChars = HexChars )
-                while ( ptr < end ) {
+                while ( outarr < end ) {
                     //using temp uint to prevent unnecessary random generating
                     ushort rnd = (ushort) bfr;
                     if ( havenums-- == 0 ) {
@@ -232,105 +232,105 @@ namespace RandomStringGenerator.Helpers {
                         rnd = (ushort) ( bfr >> 16 );
                     }
                     //indexing to use out-of-order optimizations
-                    *( ptr + 1 ) = pc;
-                    *( ptr + 2 ) = *( hexChars + ( rnd & 0xf ) );
-                    *( ptr + 3 ) = *( hexChars + ( ( rnd >> 4 ) & 0xf ) );
-                    *( ptr + 4 ) = pc;
-                    *( ptr + 5 ) = *( hexChars + ( ( rnd >> 8 ) & 0xf ) );
-                    *( ptr + 6 ) = *( hexChars + ( ( rnd >> 12 ) & 0xf ) );
-                    ptr += 6;
+                    *( outarr + 1 ) = pc;
+                    *( outarr + 2 ) = *( hexChars + ( rnd & 0xf ) );
+                    *( outarr + 3 ) = *( hexChars + ( ( rnd >> 4 ) & 0xf ) );
+                    *( outarr + 4 ) = pc;
+                    *( outarr + 5 ) = *( hexChars + ( ( rnd >> 8 ) & 0xf ) );
+                    *( outarr + 6 ) = *( hexChars + ( ( rnd >> 12 ) & 0xf ) );
+                    outarr += 6;
                 }
         }
-        public static unsafe void RandomASCIIInsert( char* ptr, int len, char* source, int maxindex ) {
-            maxindex++;
-            var end = ( ptr + len );
-            while ( ptr < end ) *ptr++ = *( source + Random.Next( maxindex ) );
+        public static unsafe void RandomAsciiInsert( char* outarr, int writeLength, char* sourceArr, int maxSourceIndex ) {
+            maxSourceIndex++;
+            var end = ( outarr + writeLength );
+            while ( outarr < end ) *outarr++ = *( sourceArr + Random.Next( maxSourceIndex ) );
         }
         /*get_to_string_size*/
-        public static byte GetDecStringLength( int i ) {
+        public static byte GetDecStringLength( int value ) {
             byte sz = 1;
-            if ( i < 0 ) {
+            if ( value < 0 ) {
                 sz++;
-                i = -i;
+                value = -value;
             }
-            while ( ( i /= 10 ) > 0 ) sz++;
+            while ( ( value /= 10 ) > 0 ) sz++;
             return sz;
         }
-        public static byte GetDecStringLength( long i ) {
+        public static byte GetDecStringLength( long value ) {
             byte sz = 1;
-            if ( i < 0 ) {
+            if ( value < 0 ) {
                 sz++;
-                i = -i;
+                value = -value;
             }
-            while ( ( i /= 10 ) > 0 ) ++sz;
+            while ( ( value /= 10 ) > 0 ) ++sz;
             return sz;
         }
-        public static byte GetHexStringLength( int i ) {
+        public static byte GetHexStringLength( int value ) {
             byte sz = 1;
-            if ( i < 0 ) {
+            if ( value < 0 ) {
                 sz++;
-                i = -i;
+                value = -value;
             }
-            while ( ( i >>= 4 ) != 0 ) ++sz;
+            while ( ( value >>= 4 ) != 0 ) ++sz;
             return sz;
         }
-        public static byte GetHexStringLength( long i ) {
+        public static byte GetHexStringLength( long value ) {
             byte sz = 1;
-            if ( i < 0 ) {
+            if ( value < 0 ) {
                 sz++;
-                i = -i;
+                value = -value;
             }
-            while ( ( i >>= 4 ) > 0 ) sz++;
+            while ( ( value >>= 4 ) > 0 ) sz++;
             return sz;
         }
         /*to_strings | bytes*/
-        public static unsafe void IntToHexStringBytesInsert( byte* outarr, byte* sourceArr, int i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToHexStringBytesInsert( byte* outarr, byte* sourceArr, int value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outarr = B;
-            outarr += sz;
-            do *--outarr = *( sourceArr + ( i & 0x0f ) ); while ( ( i >>= 4 ) != 0 );
+            outarr += writeLength;
+            do *--outarr = *( sourceArr + ( value & 0x0f ) ); while ( ( value >>= 4 ) != 0 );
         }
-        public static unsafe void IntToHexStringBytesInsert( byte* outArr, byte* sourceArr, long i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToHexStringBytesInsert( byte* outArr, byte* sourceArr, long value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outArr = B;
-            outArr += sz;
-            do *--outArr = *( sourceArr + ( i & 0x0f ) ); while ( ( i >>= 4 ) != 0 );
+            outArr += writeLength;
+            do *--outArr = *( sourceArr + ( value & 0x0f ) ); while ( ( value >>= 4 ) != 0 );
         }
-        public static unsafe void IntToDecStringBytesInsert( byte* outArr, long i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToDecStringBytesInsert( byte* outArr, long value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outArr = B;
-            outArr += sz;
-            do *--outArr = (byte) ( i % 10 + 48 ); while ( ( i /= 10 ) != 0 );
+            outArr += writeLength;
+            do *--outArr = (byte) ( value % 10 + 48 ); while ( ( value /= 10 ) != 0 );
         }
-        public static unsafe void IntToDecStringBytesInsert( byte* outArr, int i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToDecStringBytesInsert( byte* outArr, int value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outArr = B;
-            outArr += sz;
-            do *--outArr = (byte) ( i % 10 + 48 ); while ( ( i /= 10 ) != 0 );
+            outArr += writeLength;
+            do *--outArr = (byte) ( value % 10 + 48 ); while ( ( value /= 10 ) != 0 );
         }
-        public static unsafe void IntToHexStringInsert( char* outArr, char* sourceArr, long i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToHexStringInsert( char* outArr, char* sourceArr, long value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outArr = C;
-            outArr += sz;
-            do *--outArr = *( sourceArr + ( i & 0x0f ) ); while ( ( i >>= 4 ) != 0 );
+            outArr += writeLength;
+            do *--outArr = *( sourceArr + ( value & 0x0f ) ); while ( ( value >>= 4 ) != 0 );
         }
-        public static unsafe void IntToHexStringInsert( char* outArr, char* sourceArr, int i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToHexStringInsert( char* outArr, char* sourceArr, int value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outArr = C;
-            outArr += sz;
-            do *--outArr = *( sourceArr + ( i & 0x0f ) ); while ( ( i >>= 4 ) != 0 );
+            outArr += writeLength;
+            do *--outArr = *( sourceArr + ( value & 0x0f ) ); while ( ( value >>= 4 ) != 0 );
         }
-        public static unsafe void IntToDecStringInsert( char* outarr, long i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToDecStringInsert( char* outarr, long value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outarr = C;
-            outarr += sz;
-            do *--outarr = (char) ( i % 10 + 48 ); while ( ( i /= 10 ) != 0 );
+            outarr += writeLength;
+            do *--outarr = (char) ( value % 10 + 48 ); while ( ( value /= 10 ) != 0 );
         }
-        public static unsafe void IntToDecStringInsert( char* outarr, int i, byte sz ) {
-            if ( i < 0 ) i = -i;
+        public static unsafe void IntToDecStringInsert( char* outarr, int value, byte writeLength ) {
+            if ( value < 0 ) value = -value;
             *outarr = C;
-            outarr += sz;
-            do *--outarr = (char) ( i % 10 + 48 ); while ( ( i /= 10 ) != 0 );
+            outarr += writeLength;
+            do *--outarr = (char) ( value % 10 + 48 ); while ( ( value /= 10 ) != 0 );
         }
         #endregion
     }
