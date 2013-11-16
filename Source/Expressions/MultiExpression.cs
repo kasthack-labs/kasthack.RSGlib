@@ -81,7 +81,8 @@ namespace RandomStringGenerator.Expressions {
         }
         public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
             var len = this.Expressions.Length;
-            for ( var i = 0; i < len; this.Expressions[ i++ ].InsertAsciiChars( ref sizeData, ref outputBuffer ) ) { }
+            for ( var i = 0; i < len; i++)
+                this.Expressions[ i ].InsertAsciiChars( ref sizeData, ref outputBuffer);
         }
 
         /// <summary>

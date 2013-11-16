@@ -36,8 +36,7 @@ namespace RandomStringGenerator.Expressions {
             *outputdata++ = -value;
         }
         public int ComputeLengthDataSize() {
-            return 3; // 1 -cached value,  2 - __len,3 - cached value nuller,
-            //bad idea but __i have nothin better
+            return 3; // 1 -cached value,  2 - __len,3 - cached value nuller, //bad idea but __i have nothin better
         }
         public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
             if ( this.Format == NumberFormat.Decimal ) {

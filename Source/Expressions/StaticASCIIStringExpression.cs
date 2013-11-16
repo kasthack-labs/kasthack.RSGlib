@@ -38,10 +38,13 @@ namespace RandomStringGenerator.Expressions {
         public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
             fixed ( byte* tmpbuf = this._buf ) {
                 var start = tmpbuf;
-                var end = tmpbuf + *sizeData++;
-                do
-                    *outputBuffer++ = (char) *start++;
-                while ( start < end );
+                var end = tmpbuf + *sizeData;
+                ++sizeData;
+                while ( start < end ){
+                    *outputBuffer = (char) *start;
+                    ++outputBuffer;
+                    ++start;
+                }
             }
         }
 
