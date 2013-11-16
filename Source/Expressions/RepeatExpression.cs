@@ -13,8 +13,8 @@ namespace RandomStringGenerator.Expressions {
         public IExpression[] Expressions;
         private int _max;
         private int _min;
-        public int Min { get { return this._min; } set { this._min = value + 1; } }
-        public int Max { get { return this._max; } set { this._max = value + 1; } }
+        public int Min { get { return this._min-1; } set { this._min = value + 1; } }
+        public int Max { get { return this._max-1; } set { this._max = value + 1; } }
         public string GetString() { return new string( this.GetChars() ); }
         public byte[] GetAsciiBytes() { return this.GetAsciiBytes( Generators.Random.Next( this._min, this._max ) ); }
         public char[] GetChars() { return this.GetChars( Generators.Random.Next( this._min, this._max ) ); }

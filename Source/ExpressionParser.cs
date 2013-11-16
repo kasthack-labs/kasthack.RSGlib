@@ -34,7 +34,7 @@ namespace RandomStringGenerator {
                 exprs.Add( ExpresionSelect( ref reader, enc ) );
                 start = reader.Current;
             }
-            var b = AddPrevStringExpression( start, reader.Current, enc );
+            var b = AddPrevStringExpression( start, reader.Current<reader.End?reader.Current:reader.End+1, enc );
             if ( b != null )
                 exprs.Add( b );
             return new MultiExpression { Expressions = exprs.ToArray() };
