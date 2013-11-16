@@ -21,7 +21,7 @@ namespace RandomStringGenerator.Expressions {
         public byte[] GetEncodingBytes( Encoding enc ) { return this.GetEncodingBytes( enc, Generators.Random.Next( this._min, this._max ) ); }
         public unsafe void GetInsertLength( ref int* outputdata ) {
             int len = this.Expressions.Length, value = Generators.Random.Next( this._min, this._max );
-            *outputdata++ = value;
+            *outputdata++ = value;  
             *outputdata++ = -value;
             for ( var j = 0; j < value; j++ )
                 for ( var i = 0; i < len; i++ )
@@ -31,21 +31,21 @@ namespace RandomStringGenerator.Expressions {
             int sum = 0, len = this.Expressions.Length;
             for ( var i = 0; i < len; i++ )
                 sum += this.Expressions[ i ].ComputeLengthDataSize();
-            return sum * this._max + 2; //inner expressions+repeat count 
+            return sum * this._max + 2; //inner expressions+repeat count + nuller
         }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
-            int len = this.Expressions.Length, rpt = *size++;
-            size++;
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
+            int len = this.Expressions.Length, rpt = *sizeData++;
+            sizeData++;
             for ( var j = 0; j < rpt; j++ )
                 for ( var i = 0; i < len; i++ )
-                    this.Expressions[ i ].InsertAsciiBytes( ref size, ref outputBuffer );
+                    this.Expressions[ i ].InsertAsciiBytes( ref sizeData, ref outputBuffer );
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
-            int len = this.Expressions.Length, rpt = *size;
-            size += 2;
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
+            int len = this.Expressions.Length, rpt = *sizeData;
+            sizeData += 2;
             for ( var j = 0; j < rpt; j++ )
                 for ( var i = 0; i < len; i++ )
-                    this.Expressions[ i ].InsertAsciiChars( ref size, ref outputBuffer );
+                    this.Expressions[ i ].InsertAsciiChars( ref sizeData, ref outputBuffer );
         }
 
         /// <summary>

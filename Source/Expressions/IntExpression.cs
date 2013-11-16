@@ -39,25 +39,25 @@ namespace RandomStringGenerator.Expressions {
             return 3; // 1 -cached value,  2 - __len,3 - cached value nuller,
             //bad idea but __i have nothin better
         }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
             if ( this.Format == NumberFormat.Decimal ) {
-                Generators.IntToDecStringBytesInsert( outputBuffer, *size++, (byte) *size++ );
-                outputBuffer -= *size++;
+                Generators.IntToDecStringBytesInsert( outputBuffer, *sizeData++, (byte) *sizeData++ );
+                outputBuffer -= *sizeData++;
                 return;
             }
             fixed ( byte* hexPointer = Generators.HexCharsBytes )
-                Generators.IntToHexStringBytesInsert( outputBuffer, hexPointer, *size++, (byte) *size++ );
-            outputBuffer -= *size++;
+                Generators.IntToHexStringBytesInsert( outputBuffer, hexPointer, *sizeData++, (byte) *sizeData++ );
+            outputBuffer -= *sizeData++;
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
             if ( this.Format == NumberFormat.Decimal ) {
-                Generators.IntToDecStringInsert( outputBuffer, *size++, (byte) *size++ );
-                outputBuffer -= *size++;
+                Generators.IntToDecStringInsert( outputBuffer, *sizeData++, (byte) *sizeData++ );
+                outputBuffer -= *sizeData++;
                 return;
             }
             fixed ( char* hexPointer = Generators.HexChars )
-                Generators.IntToHexStringInsert( outputBuffer, hexPointer, *size++, (byte) *size++ );
-            outputBuffer -= *size++;
+                Generators.IntToHexStringInsert( outputBuffer, hexPointer, *sizeData++, (byte) *sizeData++ );
+            outputBuffer -= *sizeData++;
         }
 
         /// <summary>

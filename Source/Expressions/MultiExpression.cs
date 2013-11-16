@@ -74,14 +74,14 @@ namespace RandomStringGenerator.Expressions {
             }
             return buffer;
         }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
             var len = this.Expressions.Length;
             for ( var i = 0; i < len; i++ )
-                this.Expressions[ i ].InsertAsciiBytes( ref size, ref outputBuffer );
+                this.Expressions[ i ].InsertAsciiBytes( ref sizeData, ref outputBuffer );
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
             var len = this.Expressions.Length;
-            for ( var i = 0; i < len; this.Expressions[ i++ ].InsertAsciiChars( ref size, ref outputBuffer ) ) { }
+            for ( var i = 0; i < len; this.Expressions[ i++ ].InsertAsciiChars( ref sizeData, ref outputBuffer ) ) { }
         }
 
         /// <summary>
@@ -93,7 +93,9 @@ namespace RandomStringGenerator.Expressions {
         }
 
         public override string ToString() {
-            return this.Expressions.Length == 1 ? this.Expressions[ 0 ].ToString() : new string( this.GetChars() );
+            return this.Expressions.Length == 1
+                ? this.Expressions[ 0 ].ToString()
+                : new string( this.GetChars() );
         }
     }
 }

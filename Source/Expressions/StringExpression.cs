@@ -94,8 +94,8 @@ namespace RandomStringGenerator.Expressions {
         }
         public unsafe void GetInsertLength( ref int* outputdata ) { *outputdata++ = Generators.Random.Next( this._min, this._max ) * ( this.Format == StringFormat.Urlencode ? 6 : 1 ); }
         public int ComputeLengthDataSize() { return 1; }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
-            var len = *size++;
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
+            var len = *sizeData++;
             fixed ( byte* chars = Generators.ASCIICharsBytes )
                 switch ( this.Format ) {
                     case StringFormat.Decimal:
@@ -127,8 +127,8 @@ namespace RandomStringGenerator.Expressions {
                 }
             outputBuffer += len;
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
-            var len = *size++;
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
+            var len = *sizeData++;
             fixed ( char* chars = Generators.ASCIIChars )
                 switch ( this.Format ) {
                     case StringFormat.Decimal:

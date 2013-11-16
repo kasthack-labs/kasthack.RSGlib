@@ -63,7 +63,7 @@ namespace RandomStringGenerator {
             parseLen = Generators.FindChar( reader.Current, reader.End, '}' );
             if ( parseLen <= 0 ) throw new FormatException( "Bad Int expression(Max)" );
             exp.Max = Generators.QIntParse( reader.Current, parseLen );
-            var p = reader.Current + parseLen;     //skip max + closing bracket
+            var p = reader.Current + parseLen + 1;     //skip max + closing bracket
             reader.Current = p < reader.End ? p : reader.End;
             return exp;
         }
@@ -79,7 +79,7 @@ namespace RandomStringGenerator {
             parseLen = Generators.FindChar( reader.Current, reader.End, '}' );
             if ( parseLen <= 0 ) throw new FormatException( "Bad Char expression(Max)" );
             exp.Max = Generators.QIntParse( reader.Current, parseLen );
-            var p = reader.Current + parseLen;     //skip max + closing bracket
+            var p = reader.Current + parseLen + 1;     //skip max + closing bracket
             reader.Current = p < reader.End ? p : reader.End;
             return exp;
         }

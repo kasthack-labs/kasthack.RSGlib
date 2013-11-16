@@ -30,15 +30,15 @@ namespace RandomStringGenerator.Expressions {
         
         public unsafe void GetInsertLength( ref int* outputdata ) { *outputdata++ = this._buf.Length; }
         public int ComputeLengthDataSize() { return 1; }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer ) {
             var p = new IntPtr( outputBuffer );
-            Marshal.Copy( this._buf, 0, p, *size );
-            outputBuffer += *size++;
+            Marshal.Copy( this._buf, 0, p, *sizeData );
+            outputBuffer += *sizeData++;
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer ) {
             fixed ( byte* tmpbuf = this._buf ) {
                 var start = tmpbuf;
-                var end = tmpbuf + *size++;
+                var end = tmpbuf + *sizeData++;
                 do
                     *outputBuffer++ = (char) *start++;
                 while ( start < end );

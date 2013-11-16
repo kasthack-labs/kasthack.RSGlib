@@ -21,13 +21,13 @@ namespace RandomStringGenerator.Expressions {
         public string GetString() { return ( (char) Generators.Random.Next( this._min, this._max ) ).ToString(); }
         public unsafe void GetInsertLength( ref int* outputdata ) { *outputdata++ = 1; }
         public int ComputeLengthDataSize() { return 1; }
-        public unsafe void InsertAsciiBytes( ref int* size, ref byte* outputBuffer ) {
+        public unsafe void InsertAsciiBytes( ref int* sizeData, ref byte* outputBuffer) {
             *outputBuffer++ = (byte) Generators.Random.Next( this._min, this._max );
-            size++;
+            ++sizeData;
         }
-        public unsafe void InsertAsciiChars( ref int* size, ref char* outputBuffer ) {
+        public unsafe void InsertAsciiChars( ref int* sizeData, ref char* outputBuffer) {
             *outputBuffer++ = (char) Generators.Random.Next( this._min, this._max );
-            size++;
+            ++sizeData;
         }
 
         /// <summary>
